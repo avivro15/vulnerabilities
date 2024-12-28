@@ -4,16 +4,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Comparable version
+ * Comparable version used to compare each part of version independently
  */
 public class SemanticVersion implements Comparable<SemanticVersion> {
+
+    private static final Pattern VERSION_PATTERN =
+            Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(?:-(.+))?");
+
     private final int major;
     private final int minor;
     private final int patch;
     private final String preRelease;
 
-    private static final Pattern VERSION_PATTERN =
-            Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(?:-(.+))?");
 
     public SemanticVersion(int major, int minor, int patch, String preRelease) {
         this.major = major;

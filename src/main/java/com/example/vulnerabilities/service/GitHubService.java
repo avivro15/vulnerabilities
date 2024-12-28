@@ -3,13 +3,12 @@ package com.example.vulnerabilities.service;
 import com.example.vulnerabilities.model.EcoSystem;
 import com.example.vulnerabilities.model.Package;
 import com.example.vulnerabilities.model.SecurityVulnerability;
+import com.example.vulnerabilities.model.version.VersionConstraintHelper;
 import org.springframework.graphql.client.ClientGraphQlResponse;
 import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class GitHubService implements VulnerabilitiesService {
@@ -37,8 +36,8 @@ public class GitHubService implements VulnerabilitiesService {
 
     public GitHubService() {
         WebClient webClient = WebClient.builder()
-                // Todo move to enviorment var
-                .defaultHeader("Authorization", "Bearer " + "123")
+                .defaultHeader("Authorization", "Bearer " +
+                        System.getenv().get("GITHUB_ACCESS_TOKEN"))
                 .baseUrl("https://api.github.com/graphql").build();
 
         graphQlClient = HttpGraphQlClient.builder(webClient).build();
@@ -46,7 +45,7 @@ public class GitHubService implements VulnerabilitiesService {
 
     private List<SecurityVulnerability> extractVulnerabilitiesFromResponse(ClientGraphQlResponse response, String version) {
         // Extract the "data" from the response (the map of the response body)
-        Map<String, Object> data = (Map<String, Object>) response.toMap().get("data");
+        Map<String, Object> data = response.getData();
 
         // Get the 'securityVulnerabilities' part of the data
         Map<String, Object> securityVulnerabilities = (Map<String, Object>) data.get("securityVulnerabilities");
@@ -54,22 +53,27 @@ public class GitHubService implements VulnerabilitiesService {
         // Get the list of nodes (vulnerabilities)
         List<Map<String, Object>> nodes = (List<Map<String, Object>>) securityVulnerabilities.get("nodes");
 
-        // Convert nodes into PackageVulnerability objects
-        // insert only the relevant vulnerabilities based on version
-        return nodes.stream()
-                .map(this::convertToPackageVulnerability)
-                .filter(vulnerability -> vulnerability.isVersionVulnerable(version))
-                .collect(Collectors.toList());
+        List<SecurityVulnerability> result = new ArrayList<>();
+
+        // go over each node and check version constraint
+        for (Map<String, Object> node : nodes) {
+            String vulnerableVersionRange = (String) node.get("vulnerableVersionRange");
+            // if version in range - add it to the list
+            if (VersionConstraintHelper.isVersionInRange(version, vulnerableVersionRange)) {
+                result.add(convertToPackageVulnerability(node, version));
+            }
+        }
+
+        return result;
     }
 
-    private SecurityVulnerability convertToPackageVulnerability(Map<String, Object> node) {
+    private SecurityVulnerability convertToPackageVulnerability(Map<String, Object> node, String version) {
         String severity = (String) node.get("severity");
         String name = (String) ((Map<String, Object>) node.get("package")).get("name");
         // todo check null
         String firstPatchedVersion = (String) ((Map<String, Object>) node.get("firstPatchedVersion")).get("identifier");
-        String vulnerableVersionRange = (String) node.get("vulnerableVersionRange");
 
-        return new SecurityVulnerability(severity, name, vulnerableVersionRange, firstPatchedVersion);
+        return new SecurityVulnerability(severity, name, version, firstPatchedVersion);
     }
 
     @Override
@@ -81,12 +85,12 @@ public class GitHubService implements VulnerabilitiesService {
             ClientGraphQlResponse response = graphQlClient
                     .document(QUERY)
                     .variable("ecosystem", ecoSystem)
-                    .variable("package", p.getName())
+                    .variable("package", p.name())
                     .variable("first", MAX_RESULTS)
                     .execute().block();
 
             if (response != null) {
-                result.addAll(extractVulnerabilitiesFromResponse(response, p.getVersion()));
+                result.addAll(extractVulnerabilitiesFromResponse(response, p.version()));
             }
         }
 
