@@ -36,5 +36,4 @@ public class NpmExtractor implements PackageExtractor {
 
         return packageList;
     }
-
 }

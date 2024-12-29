@@ -9,5 +9,4 @@ public class VulnerabilitiesApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(VulnerabilitiesApplication.class, args);
 	}
-
 }

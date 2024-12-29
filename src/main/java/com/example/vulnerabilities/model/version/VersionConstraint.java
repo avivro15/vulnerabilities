@@ -13,16 +13,14 @@ public class VersionConstraint {
         this.version = version;
     }
 
-    protected boolean isSatisfiedBy(String otherVersion) {
+    protected boolean isSatisfiedBy(String otherVersion) throws IllegalArgumentException {
         return switch (operator) {
             case "<" -> SemanticVersion.compare(otherVersion, version) < 0;
             case "<=" -> SemanticVersion.compare(otherVersion, version) <= 0;
             case ">" -> SemanticVersion.compare(otherVersion, version) > 0;
             case ">=" -> SemanticVersion.compare(otherVersion, version) >= 0;
-            // TODO and this too exception
             default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
         };
     }
-
 }
 

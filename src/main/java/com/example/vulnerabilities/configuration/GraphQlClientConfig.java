@@ -20,5 +20,4 @@ public class GraphQlClientConfig {
 
         return HttpGraphQlClient.builder(webClient).build();
     }
-
 }

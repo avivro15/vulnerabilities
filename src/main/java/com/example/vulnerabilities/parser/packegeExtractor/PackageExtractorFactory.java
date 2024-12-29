@@ -14,5 +14,4 @@ public class PackageExtractorFactory {
         // In the future it will be replaced with switch case by ecosystem
         return npmExtractor;
     }
-
 }

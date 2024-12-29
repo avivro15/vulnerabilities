@@ -16,27 +16,37 @@ public class VersionConstraintHelper {
 
     /**
      * Checks if version is satisfying a range
-     * Version should satisfy all constraints in order to satisfy
+     * Version should satisfy all constraints
+     * if version range is not processable TRUE will be returned
      * @param version version to check
      * @param vulnerableVersionRange range for version "< 3.0.0" || "<= 4.2.3"
      * @return is version satisfying all constraints in range
      */
     public static boolean isVersionInRange(String version, String vulnerableVersionRange) {
-        for (VersionConstraint constraint : parse(vulnerableVersionRange)) {
-            if (!constraint.isSatisfiedBy(version)) {
-                return false;
+        try {
+            for (VersionConstraint constraint : parse(vulnerableVersionRange)) {
+                if (!constraint.isSatisfiedBy(version)) {
+                    return false;
+                }
             }
-        }
 
-        return true;
+            return true;
+        }
+        catch (IllegalArgumentException exception) {
+            // In order to be on the safe side we will assume that every unprocessable package
+            // is within our current package constraints
+            System.out.println(exception.getMessage());
+
+            return true;
+        }
     }
 
     /**
      * Parse range to list of version constraints
-     * @param vulnerableVersionRange string representing range "< 3" f.e
+     * @param vulnerableVersionRange string representing range "<= 3, > 4" f.e
      * @return list of constraints
      */
-    private static List<VersionConstraint> parse(String vulnerableVersionRange) {
+    private static List<VersionConstraint> parse(String vulnerableVersionRange) throws IllegalArgumentException {
         List<VersionConstraint> versionConstraints = new ArrayList<>();
 
         // Create a matcher for the version range string
@@ -48,11 +58,18 @@ public class VersionConstraintHelper {
             String operator = matcher.group(1).trim();
             String version = matcher.group(2).trim();
 
-            // Create and add the VersionConstraint object
-            versionConstraints.add(new VersionConstraint(operator, version));
+            if (!operator.isEmpty() && !version.isEmpty()) {
+                // Create and add the VersionConstraint object
+                versionConstraints.add(new VersionConstraint(operator, version));
+            }
         }
 
-        return versionConstraints;
+        // if no constraints found - throw an error
+        if (versionConstraints.isEmpty()) {
+            throw new IllegalArgumentException("Invalid version constraint format: " + vulnerableVersionRange);
+        }
+        else {
+            return versionConstraints;
+        }
     }
-
 }

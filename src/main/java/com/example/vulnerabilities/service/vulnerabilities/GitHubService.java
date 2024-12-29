@@ -83,7 +83,7 @@ public class GitHubService implements VulnerabilitiesService {
         Map<String, Object> securityVulnerabilities = (Map<String, Object>) data.get(SECURITY_KEY);
 
         // Check if nodes is available
-        if (!(securityVulnerabilities.get(NODES_KEY) instanceof ArrayList)) {
+        if (!(securityVulnerabilities.get(NODES_KEY) instanceof List)) {
             return result;
         }
 
@@ -151,5 +151,4 @@ public class GitHubService implements VulnerabilitiesService {
                 .flatMap(List::stream)        // Flatten the lists of vulnerabilities
                 .collect(Collectors.toList());
     }
-
 }

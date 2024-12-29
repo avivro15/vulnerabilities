@@ -16,7 +16,4 @@ public class VulnerabilitiesServiceFactory {
     public VulnerabilitiesService getService() {
         return gitHubService;
     }
-
-
-
 }

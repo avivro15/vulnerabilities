@@ -34,5 +34,4 @@ public class RequestHandler {
         return vulnerabilitiesServiceFactory.getService()
                 .getVulnerablePackages(packages, request.ecosystem());
     }
-
 }

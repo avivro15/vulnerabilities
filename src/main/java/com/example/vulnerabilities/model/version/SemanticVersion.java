@@ -59,5 +59,4 @@ public class SemanticVersion implements Comparable<SemanticVersion> {
         // if both versions have preRelease tag compare both strings lexicographically
         return preRelease.compareTo(other.preRelease);
     }
-
 }
