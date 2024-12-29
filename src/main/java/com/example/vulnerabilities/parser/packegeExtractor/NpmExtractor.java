@@ -4,7 +4,6 @@ import com.example.vulnerabilities.model.Package;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,13 +19,16 @@ public class NpmExtractor implements PackageExtractor {
      * Extract package from base64 file received from user as package.json file
      * @param fileContent base64 package.json file
      * @return list of package under "dependencies"
-     * @throws JsonProcessingException throws when json is unparsable
      */
     @Override
     public List<Package> extractPackage(String fileContent) throws JsonProcessingException, IllegalArgumentException {
         List<com.example.vulnerabilities.model.Package> packageList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+
+        // Get the first node of the parsed base64 file
         JsonNode rootNode = objectMapper.readTree(FileDecodeHelper.decodeBase64File(fileContent));
+
+        // Find the dependencies path
         JsonNode dependenciesNode = rootNode.path(DEPENDENCIES_ROOT);
 
         Iterator<String> fieldNames = dependenciesNode.fieldNames();

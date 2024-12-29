@@ -127,23 +127,25 @@ public class GitHubService implements VulnerabilitiesService {
     @Override
     public List<SecurityVulnerability> getVulnerablePackages(List<Package> packages, EcoSystem ecoSystem) {
         // Create a list of CompletableFutures one for each package
-        // execute the graphql request on a separate thread for each package
-        List<CompletableFuture<List<SecurityVulnerability>>> futures = packages.stream()
-                .map(p -> CompletableFuture.supplyAsync(() -> {
-                    ClientGraphQlResponse response = graphQlClient
-                            .document(QUERY)
-                            .variable(ECO_SYSTEM_VAR, ecoSystem)
-                            .variable(PACKAGE_VAR, p.name())
-                            .variable(FIRST_VAR, MAX_RESULTS)
-                            .execute().block();
+        List<CompletableFuture<List<SecurityVulnerability>>> futures = new ArrayList<>();
 
-                    if (response != null) {
-                        return extractVulnerabilitiesFromResponse(response, p.version());
-                    } else {
-                        return new ArrayList<SecurityVulnerability>();
-                    }
-                }))
-                .toList();
+        // execute the graphql request on a separate thread for each package
+        for (Package p : packages) {
+            futures.add(CompletableFuture.supplyAsync(() -> {
+                ClientGraphQlResponse response = graphQlClient
+                        .document(QUERY)
+                        .variable(ECO_SYSTEM_VAR, ecoSystem)
+                        .variable(PACKAGE_VAR, p.name())
+                        .variable(FIRST_VAR, MAX_RESULTS)
+                        .execute().block();
+
+                if (response != null) {
+                    return extractVulnerabilitiesFromResponse(response, p.version());
+                } else {
+                    return new ArrayList<>();
+                }
+            }));
+        }
 
         // Wait for all tasks to complete and combine results
         return futures.stream()

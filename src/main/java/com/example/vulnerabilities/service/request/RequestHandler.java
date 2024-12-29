@@ -24,7 +24,8 @@ public class RequestHandler {
      * Handle user's request
      * @param request received request
      * @return vulnerable packages
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException if json couldn't be parsed
+     * @throws IllegalArgumentException if scan request argument is not base64
      */
     public List<SecurityVulnerability> handle(ScanRequest request) throws JsonProcessingException, IllegalArgumentException {
         List<Package> packages =
