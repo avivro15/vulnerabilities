@@ -4,11 +4,14 @@ import com.example.vulnerabilities.model.Package;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@Component
 public class NpmExtractor implements PackageExtractor {
 
     private final String DEPENDENCIES_ROOT = "dependencies";
