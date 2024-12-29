@@ -1,10 +1,10 @@
-package com.example.vulnerabilities;
+package com.example.vulnerabilities.service.request;
 
 import com.example.vulnerabilities.model.ScanRequest;
 import com.example.vulnerabilities.model.Package;
 import com.example.vulnerabilities.model.SecurityVulnerability;
 import com.example.vulnerabilities.parser.packegeExtractor.PackageExtractorFactory;
-import com.example.vulnerabilities.service.GitHubService;
+import com.example.vulnerabilities.service.vulnerabilities.GitHubService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

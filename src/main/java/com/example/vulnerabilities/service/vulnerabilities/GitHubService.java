@@ -1,13 +1,14 @@
-package com.example.vulnerabilities.service;
+package com.example.vulnerabilities.service.vulnerabilities;
 
 import com.example.vulnerabilities.model.EcoSystem;
 import com.example.vulnerabilities.model.Package;
 import com.example.vulnerabilities.model.SecurityVulnerability;
 import com.example.vulnerabilities.model.version.VersionConstraintHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.client.ClientGraphQlResponse;
 import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+
 import java.util.*;
 
 @Service
@@ -32,16 +33,10 @@ public class GitHubService implements VulnerabilitiesService {
                  }
             """;
 
-    private final HttpGraphQlClient graphQlClient;
+    @Autowired
+    private HttpGraphQlClient graphQlClient;
 
-    public GitHubService() {
-        WebClient webClient = WebClient.builder()
-                .defaultHeader("Authorization", "Bearer " +
-                        System.getenv().get("GITHUB_ACCESS_TOKEN"))
-                .baseUrl("https://api.github.com/graphql").build();
-
-        graphQlClient = HttpGraphQlClient.builder(webClient).build();
-    }
+    public GitHubService() {}
 
     private List<SecurityVulnerability> extractVulnerabilitiesFromResponse(ClientGraphQlResponse response, String version) {
         // Extract the "data" from the response (the map of the response body)

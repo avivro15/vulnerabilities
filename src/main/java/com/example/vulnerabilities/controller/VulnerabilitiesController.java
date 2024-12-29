@@ -1,6 +1,6 @@
 package com.example.vulnerabilities.controller;
 
-import com.example.vulnerabilities.RequestHandler;
+import com.example.vulnerabilities.service.request.RequestHandler;
 import com.example.vulnerabilities.model.ScanRequest;
 import com.example.vulnerabilities.model.SecurityVulnerability;
 import com.fasterxml.jackson.core.JsonProcessingException;

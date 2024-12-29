@@ -1,4 +1,4 @@
-package com.example.vulnerabilities.service;
+package com.example.vulnerabilities.service.vulnerabilities;
 
 import com.example.vulnerabilities.model.EcoSystem;
 import com.example.vulnerabilities.model.Package;
