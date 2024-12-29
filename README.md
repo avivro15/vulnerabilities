@@ -4,7 +4,7 @@ Find vulnerable packages in project configuration files.
 
 ## Usage
 
-Send post request to http://13.60.211.191:8080/api/v1/vulnerabilities/scan
+Send post request to http://51.20.55.124:8080/api/v1/vulnerabilities/scan
 
 With json body 
 
