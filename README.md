@@ -1,6 +1,6 @@
 # Vulenrabilities
 
-Find vulnerable packages in project configuration files.
+Find vulnerable packages in project configuration files utilizig the Github Security Vulnerabilities GraphQL API.
 
 ## Usage
 
@@ -22,7 +22,7 @@ With json body
 }
 ```
 
-File content - 
+filecontent - 
 ```
 {
   "name": "My Application",
@@ -34,4 +34,6 @@ File content -
   }
 }
 ```
-
+> [!TIP]
+> You can use the github graphql explorer
+> https://docs.github.com/en/graphql/overview/explorer
