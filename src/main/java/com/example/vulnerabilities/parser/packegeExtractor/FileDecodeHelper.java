@@ -4,7 +4,7 @@ import java.util.Base64;
 
 public class FileDecodeHelper {
 
-    public static String decodeBase64File(String file) {
+    public static String decodeBase64File(String file) throws IllegalArgumentException {
         return new String(Base64.getDecoder().decode(file));
     }
 

@@ -6,6 +6,9 @@ import com.example.vulnerabilities.model.SecurityVulnerability;
 
 import java.util.List;
 
+/**
+ * Vulnerability service to generate vulnerable packages for packages list and specified ecosystem
+ */
 public interface VulnerabilitiesService {
 
     List<SecurityVulnerability> getVulnerablePackages(List<Package> packages,

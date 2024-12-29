@@ -20,7 +20,7 @@ public class NpmExtractor implements PackageExtractor {
      * @throws JsonProcessingException throws when json is unparsable
      */
     @Override
-    public List<Package> extractPackage(String fileContent) throws JsonProcessingException {
+    public List<Package> extractPackage(String fileContent) throws JsonProcessingException, IllegalArgumentException {
         List<com.example.vulnerabilities.model.Package> packageList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(FileDecodeHelper.decodeBase64File(fileContent));
